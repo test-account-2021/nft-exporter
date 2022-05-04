@@ -189,7 +189,7 @@ def returnData():
             rarity = orderRarity[1]
             if config.enableGeneration and stripColorFromName(i) in config.colorList:
                count += 1
-               number = str(count)
+               number = orderRarity[2]
                color = orderRarity[2]
             else:
                color = "0"

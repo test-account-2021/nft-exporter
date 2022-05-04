@@ -13,6 +13,7 @@ sys.path.append(r'C:\Users\pedro\Git\NFTExporter')
 # PEDRO END
 sys.modules.values()
 
+
 class bcolors:
    '''
    The colour of console messages.
@@ -43,6 +44,25 @@ importlib.reload(RenderTest)
 importlib.reload(Exporter)
 importlib.reload(BatchRefactorer)
 importlib.reload(RarityChecker)
+
+
+print("---------------   SCENE LIST   ---------------")
+for scene in bpy.data.scenes:
+    print(scene.name)
+    scene.cycles.device = 'GPU'
+    scene.render.resolution_percentage = config.RENDER_RESOLUTION_PERCENTAGE
+    scene.cycles.samples = 128
+
+bpy.context.preferences.addons['cycles'].preferences.compute_device_type = 'CUDA'
+
+# Enable and list all devices, or optionally disable CPU
+print("----------------------------------------------")
+for d in bpy.context.preferences.addons['cycles'].preferences.devices:
+    d.use = True
+    if d.type == 'CPU':
+        d.use = False
+    print("Device '{}' type {} : {}" . format(d.name, d.type, d.use))
+print("----------------------------------------------")
 
 
 if not config.enableExporter and not config.runPreview and not config.refactorBatchOrder:

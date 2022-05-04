@@ -2,7 +2,7 @@
 # This file determines the settings of your NFT collection. Please read the README.md file to understand how to run this
 # program.
 
-nftName = 'Crescent'  # The name of the NFT image produces by PNG-Generator
+nftName = 'Mintillionaire'  # The name of the NFT image produces by PNG-Generator
 
 imageFileFormat = 'PNG'  # Dictate the image extension when Blender renders the images
 # Type the exact name provided below in the '' above:
@@ -31,8 +31,8 @@ modelFileFormat = 'glb'  # The file format of the objects you would like to expo
 # for a complete list of object formats supported by Blender.
 
 # The path to Blend_My_NFTs folder:
-save_path_mac = ''
-save_path_linux = ''
+save_path_mac = '~/nft-exporter'
+save_path_linux = '~/nft-exporter'
 save_path_windows = r'C:\Users\pedro\Git\NFTExporter'
 # Place the path in the '', e.g: save_path_mac = '/Users/Path/to/Blend_My_NFTs'
 # Example mac: /Users/Path/to/Blend_My_NFTs
@@ -43,17 +43,13 @@ maxNFTs = 5  # The maximum number of NFTs you want to generate.
 nftsPerBatch = 5  # Number of NFTs per batch
 renderBatch = 1  # The batch number to render in Exporter.py
 
-# Set to True to generate images or 3D models depending on your settings below when main.py is run in Blender. Only works
-# if you have already generated NFTRecord.json and all batches.
-enableExporter = True
-
 enableImages = True  # Renders and exports Images when main.py is run in Blender if enableExporter = True
 enableAnimations = False  # Renders and exports Animations when main.py is run in Blender if enableExporter = True
 enableModelsBlender = True  # Generates 3D models when main.py is run in Blender if enableExporter = True
 # ^^ Generates models with .blend file NOT external object library.
 
 # Set to true to perform a lightbake before export. Only necessary when generating final output.
-enableLightBake = False
+enableLightBake = True
 
 # Enables Rarity_Sorter to weigh NFT DNA attributes and variants:
 enableRarity = False
@@ -85,12 +81,18 @@ turnNumsOff = True  # When set to True, turns off the extension numbers represen
 
 metaDataDescription = ''  # The description of your NFT that will be inserted into its meta data
 
+# Set to True to generate images or 3D models depending on your settings below when main.py is run in Blender. Only works
+# if you have already generated NFTRecord.json and all batches.
+enableExporter = True
+
+RENDER_RESOLUTION_PERCENTAGE = 50
+
 # ADVANCED FEATURES:
 ### Select colour or material.###
 # Object generation options:
 enableGeneration = True  # When set to true this applies the sets of colors listed below to the objects in the collections named below
 
-generationType = 'color'  # You can either set 'color' or 'material' here. Type you set will correspond to following options.
+generationType = 'material'  # You can either set 'color' or 'material' here. Type you set will correspond to following options.
 # generationType = 'material' mode is experimental. Be sure that you back-up your file.
 # You need to set materials as "fake user". Do not miss this step. Or your materials going to vanish after running this script.
 
@@ -128,14 +130,15 @@ if generationType == 'color':  # Do not change this line.
 # The collections below are Current Files' Materials. You can put as many or as little materials values in these lists as you would like.
 # You can create any number of materialLists and assign them to any number of collections that you would like.
 # Each set of materialLists assigned to an object by collection name in the materialList will act like an attribute and create a unique variant of that item.
-materialList1 = ['Material1', 'Material1.001', 'Material1.002', 'Material1.003', 'Material1.004']
-materialList2 = ['Material2', 'Material2.001', 'Material2.002', 'Material2.003', 'Material2.004']
+materialList1 = ['Dollars_50', 'Dollars_500', 'Dollars_1000', 'Euros_100', 'Pounds_20', 'Pounds_50',
+'Renminbi_20', 'Renminbi_50', 'Renminbi_100', 'Ruble_500', 'Ruble_1000', 'Ruble_5000', 'Sheckles_50',
+'Sheckles_100', 'Sheckles_200', 'Yen_1000', 'Yen_2000', 'Yen_5000']
 
 # The following material list can be as long or as short as you want it to be.
 # To use this all you need to do is place the name of the collection you want materials assigned in the "" and the set of materials you want to apply to it after the :
 # The collection named can only contain objects and not sub collections. Every object in the collection will be set to the materials you assigned above for each attribute
 if generationType == 'material':  # Do not change this line.
-    colorList = {"Cube_1_33": materialList1, "Sphere_2_0": materialList2}
+    colorList = {"A_1_0": materialList1, "B_1_0": materialList1, "C_1_0": materialList1}
 
 enableResetViewport = True  # If True: turns all viewport and render cameras on after Image_Generator is finished operations
 
@@ -164,6 +167,7 @@ checkRarity = False
 
 # Utilities - DO NOT TOUCH:
 import platform
+import os
 
 mac = 'Darwin'
 linux = 'Linux'
@@ -173,10 +177,10 @@ save_path = None
 
 # Save_path utilities and os compatibility
 if platform.system() == mac:
-    save_path = save_path_mac
+    save_path = os.path.expanduser(save_path_mac)
     slash = '/'
 elif platform.system() == linux:
-    save_path = save_path_linux
+    save_path = os.path.expanduser(save_path_linux)
     slash = '/'
 elif platform.system() == windows:
     save_path = save_path_windows
