@@ -85,7 +85,7 @@ metaDataDescription = ''  # The description of your NFT that will be inserted in
 # if you have already generated NFTRecord.json and all batches.
 enableExporter = True
 
-RENDER_RESOLUTION_PERCENTAGE = 50
+RENDER_RESOLUTION_PERCENTAGE = 100
 
 # ADVANCED FEATURES:
 ### Select colour or material.###
