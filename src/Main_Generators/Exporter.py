@@ -8,8 +8,10 @@ import sys
 import time
 import json
 import importlib
-# parroyo BEGIN 01.17.22 Needed to run the lightbake 
+
+# parroyo BEGIN 01.17.22 Needed to run the lightbake
 import addon_utils
+
 # parroyo END
 
 dir = os.path.dirname(bpy.data.filepath)
@@ -22,74 +24,82 @@ from src.Main_Generators import metaData
 importlib.reload(config)
 importlib.reload(metaData)
 
+
 class bcolors:
-   '''
-   The colour of console messages.
-   '''
-   OK = '\033[92m'  # GREEN
-   WARNING = '\033[93m'  # YELLOW
-   ERROR = '\033[91m'  # RED
-   RESET = '\033[0m'  # RESET COLOR
+    """
+    The colour of console messages.
+    """
+
+    OK = "\033[92m"  # GREEN
+    WARNING = "\033[93m"  # YELLOW
+    ERROR = "\033[91m"  # RED
+    RESET = "\033[0m"  # RESET COLOR
+
 
 if config.runPreview:
-   config.nftsPerBatch = config.maxNFTsTest
-   config.maxNFTs = config.maxNFTsTest
-   config.renderBatch = 1
-   config.nftName = "TestImages"
+    config.nftsPerBatch = config.maxNFTsTest
+    config.maxNFTs = config.maxNFTsTest
+    config.renderBatch = 1
+    config.nftName = "TestImages"
+
 
 def stripColorFromName(name):
-   return "_".join(name.split("_")[:-1])
-   
-def getBatchData():
-    '''
-    Retrieves a given batches data determined by renderBatch in config.py
-    '''
+    return "_".join(name.split("_")[:-1])
 
-    file_name = os.path.join(config.batch_json_save_path, "Batch{}.json".format(config.renderBatch))
+
+def getBatchData():
+    """
+    Retrieves a given batches data determined by renderBatch in config.py
+    """
+
+    file_name = os.path.join(
+        config.batch_json_save_path, "Batch{}.json".format(config.renderBatch)
+    )
     batch = json.load(open(file_name))
-    
+
     NFTs_in_Batch = batch["NFTs_in_Batch"]
     hierarchy = batch["hierarchy"]
     BatchDNAList = batch["BatchDNAList"]
 
     return NFTs_in_Batch, hierarchy, BatchDNAList
 
+
 def render_and_save_NFTs():
-    '''
+    """
     Renders the NFT DNA in a Batch#.json, where # is renderBatch in config.py. Turns off the viewport camera and
     the render camera for all items in hierarchy.
-    '''
+    """
 
     NFTs_in_Batch, hierarchy, BatchDNAList = getBatchData()
 
     time_start_1 = time.time()
-    print ("PEDRO rendering hierarchy " + str(hierarchy))
+    print("PEDRO rendering hierarchy " + str(hierarchy))
 
     x = 1
     for a in BatchDNAList:
         for i in hierarchy:
             for j in hierarchy[i]:
                 if config.enableGeneration:
-                    '''
-                     Remove Color code so blender recognises the collection
-                    '''
+                    """
+                    Remove Color code so blender recognises the collection
+                    """
                     j = stripColorFromName(j)
                 bpy.data.collections[j].hide_render = True
                 bpy.data.collections[j].hide_viewport = True
 
         def match_DNA_to_Variant(a):
-            '''
+            """
             Matches each DNA number sepearted by "-" to its attribute, then its variant.
-            '''
+            """
 
             listAttributes = list(hierarchy.keys())
-            listDnaDecunstructed = a.split('-')
+            listDnaDecunstructed = a.split("-")
             dnaDictionary = {}
 
             for i, j in zip(listAttributes, listDnaDecunstructed):
                 dnaDictionary[i] = j
 
-            print ("PEDRO Found dictionary " + str(dnaDictionary))
+            print("PEDRO Found dictionary " + str(dnaDictionary))
             for x in dnaDictionary:
                 for k in hierarchy[x]:
                     kNum = hierarchy[x][k]["number"]
@@ -97,9 +107,9 @@ def render_and_save_NFTs():
                         dnaDictionary.update({x: k})
             return dnaDictionary
 
-        print ("PEDRO Matching DNA to variant " + str(a))
+        print("PEDRO Matching DNA to variant " + str(a))
         dnaDictionary = match_DNA_to_Variant(a)
-        print ("PEDRO Found variant " + str(dnaDictionary))
+        print("PEDRO Found variant " + str(dnaDictionary))
         name = config.nftName + "_" + str(x)
 
         print("")
@@ -118,7 +128,9 @@ def render_and_save_NFTs():
 
         time_start_2 = time.time()
 
-        batchFolder = os.path.join(config.nft_save_path, "Batch" + str(config.renderBatch))
+        batchFolder = os.path.join(
+            config.nft_save_path, "Batch" + str(config.renderBatch)
+        )
 
         imagePath = os.path.join(batchFolder, "Images", name)
         animationPath = os.path.join(batchFolder, "Animations", name)
@@ -132,7 +144,7 @@ def render_and_save_NFTs():
         # parroyo BEGIN 01.17.22 Ensures lightmaps are cleaned while all objects are enabled.
         if config.enableLightBake:
             try:
-                bpy.ops.tlm.clean_lightmaps('INVOKE_DEFAULT')
+                bpy.ops.tlm.clean_lightmaps("INVOKE_DEFAULT")
 
                 # Adds time to allow lightmapper to update materials.
                 time.sleep(1)
@@ -143,21 +155,23 @@ def render_and_save_NFTs():
         if config.enableGeneration:
             for c in dnaDictionary:
                 collection = dnaDictionary[c]
-                print ("here")
-                print (collection)
+                print("here")
+                print(collection)
                 if stripColorFromName(collection) in config.colorList:
-                    colorVal = int(collection.rsplit("_", 1)[1])-1
+                    colorVal = int(collection.rsplit("_", 1)[1]) - 1
                     collection = stripColorFromName(collection)
                     bpy.data.collections[collection].hide_render = False
                     bpy.data.collections[collection].hide_viewport = False
-                    if config.generationType == 'color':
+                    if config.generationType == "color":
                         colorDict = config.colorList[collection]
-                        print (colorDict)
-                        print (colorDict.keys())
-                        for activeObject in bpy.data.collections[collection].all_objects: 
+                        print(colorDict)
+                        print(colorDict.keys())
+                        for activeObject in bpy.data.collections[
+                            collection
+                        ].all_objects:
                             # parroyo BEGIN 01.17.22 Changes the behavior to update the existing material node.
-                            #print (activeObject.data.materials)
-                            #for material in activeObject.data.materials:
+                            # print (activeObject.data.materials)
+                            # for material in activeObject.data.materials:
                             #    print (activeObject)
                             #    print (material)
                             #    print (config.colorList[collection][colorVal])
@@ -165,33 +179,39 @@ def render_and_save_NFTs():
                             #    for node in nodes:
                             #        if node.type == "RGB":
                             #            node.outputs["Color"].default_value = config.colorList[collection][colorVal]
-                            print ("activeObject: " + activeObject.name)
+                            print("activeObject: " + activeObject.name)
                             if activeObject.name in colorDict:
-                                print ("ACTIVE OBJECT IN COLORDICT")
-                                #color = config.colorList[collection][colorVal]        
+                                print("ACTIVE OBJECT IN COLORDICT")
+                                # color = config.colorList[collection][colorVal]
                                 color = colorDict[activeObject.name]
-                                print (activeObject.data.materials)
+                                print(activeObject.data.materials)
                                 for material in activeObject.data.materials:
-                                    print (material)
-                                    print (color)
+                                    print(material)
+                                    print(color)
                                     nodes = material.node_tree.nodes
                                     for node in nodes:
                                         if node.type == "RGB":
                                             node.outputs["Color"].default_value = color
                             else:
-                                print ("ACTIVE OBJECT NOT IN COLORDICT")
-                                
-                                #mat = bpy.data.materials.new("PKHG")
-                                #mat.diffuse_color = config.colorList[collection][colorVal]
-                                #activeObject.active_material = mat
-                            # parroyo END    
-                    if config.generationType == 'material':
-                        for activeObject in bpy.data.collections[collection].all_objects: 
-                            activeObject.material_slots[0].material = bpy.data.materials[config.colorList[collection][colorVal]]
+                                print("ACTIVE OBJECT NOT IN COLORDICT")
+
+                                # mat = bpy.data.materials.new("PKHG")
+                                # mat.diffuse_color = config.colorList[collection][colorVal]
+                                # activeObject.active_material = mat
+                            # parroyo END
+                    if config.generationType == "material":
+                        for activeObject in bpy.data.collections[
+                            collection
+                        ].all_objects:
+                            activeObject.material_slots[
+                                0
+                            ].material = bpy.data.materials[
+                                config.colorList[collection][colorVal]
+                            ]
                 else:
-                    print ("Handling non colored collection: " + collection)
+                    print("Handling non colored collection: " + collection)
                     collection = stripColorFromName(collection)
-                    print ("Name after stripping color index: " + collection)
+                    print("Name after stripping color index: " + collection)
                     bpy.data.collections[collection].hide_render = False
                     bpy.data.collections[collection].hide_viewport = False
 
@@ -199,7 +219,7 @@ def render_and_save_NFTs():
 
         if config.enableLightBake:
             try:
-                bpy.ops.tlm.build_lightmaps('INVOKE_DEFAULT')
+                bpy.ops.tlm.build_lightmaps("INVOKE_DEFAULT")
 
                 # Adds time to allow lightmapper to update materials.
                 time.sleep(1)
@@ -219,7 +239,9 @@ def render_and_save_NFTs():
                 os.makedirs(animationFolder)
 
             bpy.context.scene.render.filepath = animationPath
-            bpy.context.scene.render.image_settings.file_format = config.animationFileFormat
+            bpy.context.scene.render.image_settings.file_format = (
+                config.animationFileFormat
+            )
             bpy.ops.render.render(animation=True)
 
         if config.enableModelsBlender:
@@ -230,30 +252,32 @@ def render_and_save_NFTs():
                 coll = dnaDictionary[i]
                 # parroyo BEGIN 01.17.22 Strip color index from the collection name before lookup.
                 coll = stripColorFromName(coll)
-                # parroyo END 
+                # parroyo END
                 for obj in bpy.data.collections[coll].all_objects:
                     obj.select_set(True)
 
-            for obj in bpy.data.collections['Script_Ignore'].all_objects:
+            for obj in bpy.data.collections["Script_Ignore"].all_objects:
                 obj.select_set(True)
 
-            if config.modelFileFormat == 'glb':
-                bpy.ops.export_scene.gltf(filepath=modelPath,
-                                          check_existing=True,
-                                          export_format='GLB',
-                                          use_selection=True)
-            elif config.modelFileFormat == 'fbx':
-                bpy.ops.export_scene.fbx(filepath=modelPath,
-                                         check_existing=True,
-                                         use_selection=True)
-            elif config.modelFileFormat == 'obj':
-                bpy.ops.export_scene.obj(filepath=modelPath,
-                                         check_existing=True,
-                                         use_selection=True)
-            elif config.modelFileFormat == 'x3d':
-                bpy.ops.export_scene.x3d(filepath=modelPath,
-                                         check_existing=True,
-                                         use_selection=True)
+            if config.modelFileFormat == "glb":
+                bpy.ops.export_scene.gltf(
+                    filepath=modelPath,
+                    check_existing=True,
+                    export_format="GLB",
+                    use_selection=True,
+                )
+            elif config.modelFileFormat == "fbx":
+                bpy.ops.export_scene.fbx(
+                    filepath=modelPath, check_existing=True, use_selection=True
+                )
+            elif config.modelFileFormat == "obj":
+                bpy.ops.export_scene.obj(
+                    filepath=modelPath, check_existing=True, use_selection=True
+                )
+            elif config.modelFileFormat == "x3d":
+                bpy.ops.export_scene.x3d(
+                    filepath=modelPath, check_existing=True, use_selection=True
+                )
 
         if not os.path.exists(metaDataFolder):
             os.makedirs(metaDataFolder)
@@ -266,10 +290,15 @@ def render_and_save_NFTs():
 
         jsonMetaData = json.dumps(metaDataDict, indent=1, ensure_ascii=True)
 
-        with open(os.path.join(metaDataFolder, "Data_" + name + ".json"), 'w') as outfile:
-            outfile.write(jsonMetaData + '\n')
+        with open(
+            os.path.join(metaDataFolder, "Data_" + name + ".json"), "w"
+        ) as outfile:
+            outfile.write(jsonMetaData + "\n")
 
-        print("Completed {} render in ".format(name) + "%.4f seconds" % (time.time() - time_start_2))
+        print(
+            "Completed {} render in ".format(name)
+            + "%.4f seconds" % (time.time() - time_start_2)
+        )
         x += 1
 
     if config.enableResetViewport:
@@ -282,7 +311,12 @@ def render_and_save_NFTs():
                     bpy.data.collections[j].hide_viewport = False
 
     print("\nAll NFT PNGs rendered, process finished.")
-    print("Completed all renders in Batch{}.json in ".format(config.renderBatch) + "%.4f seconds" % (time.time() - time_start_1) + "\n")
+    print(
+        "Completed all renders in Batch{}.json in ".format(config.renderBatch)
+        + "%.4f seconds" % (time.time() - time_start_1)
+        + "\n"
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     render_and_save_NFTs()

@@ -2,9 +2,9 @@
 # This file determines the settings of your NFT collection. Please read the README.md file to understand how to run this
 # program.
 
-nftName = 'Mintillionaire'  # The name of the NFT image produces by PNG-Generator
+nftName = "Mintillionaire"  # The name of the NFT image produces by PNG-Generator
 
-imageFileFormat = 'PNG'  # Dictate the image extension when Blender renders the images
+imageFileFormat = "PNG"  # Dictate the image extension when Blender renders the images
 # Type the exact name provided below in the '' above:
 # JPEG - Exports the .jpeg format
 # PNG - Exports the .png format
@@ -12,7 +12,9 @@ imageFileFormat = 'PNG'  # Dictate the image extension when Blender renders the 
 # for a complete list of file formats supported by Blender. (Only use Image file extensions with imageFileFormat, 3D
 # object, or animation file extensions will cause the program to fail)
 
-animationFileFormat = ''  # Dictate the animations extension when Blender renders and compiles the images
+animationFileFormat = (
+    ""  # Dictate the animations extension when Blender renders and compiles the images
+)
 # Type the exact name provided below in the '' above:
 # AVI_JPEG - Exports the .avi jpeg format
 # AVI_RAW - Exports the .avi raw format
@@ -21,7 +23,7 @@ animationFileFormat = ''  # Dictate the animations extension when Blender render
 # Visit https://docs.blender.org/api/current/bpy.types.Image.html#bpy.types.Image.file_format
 # for a complete list of file formats supported by Blender. (These are the Blender only supported animation formats)
 
-modelFileFormat = 'glb'  # The file format of the objects you would like to export
+modelFileFormat = "glb"  # The file format of the objects you would like to export
 # Type the exact name provided below in the '' above:
 # fbx - The .FBX file format
 # glb - The .glb file format
@@ -31,28 +33,30 @@ modelFileFormat = 'glb'  # The file format of the objects you would like to expo
 # for a complete list of object formats supported by Blender.
 
 # The path to Blend_My_NFTs folder:
-save_path_mac = '~/nft-exporter'
-save_path_linux = '~/nft-exporter'
-save_path_windows = r'C:\Users\pedro\Git\NFTExporter'
+save_path_mac = "~/nft-exporter"
+save_path_linux = "~/nft-exporter"
+save_path_windows = r"C:\Users\pedro\Git\NFTExporter"
 # Place the path in the '', e.g: save_path_mac = '/Users/Path/to/Blend_My_NFTs'
 # Example mac: /Users/Path/to/Blend_My_NFTs
 # Example linux: /Users/Path/to/Blend_My_NFTs
 # Example windows: C:\Users\Path\to\Blend_My_NFTs
 
-maxNFTs = 5  # The maximum number of NFTs you want to generate.
+maxNFTs = 1000  # The maximum number of NFTs you want to generate.
 nftsPerBatch = 5  # Number of NFTs per batch
 renderBatch = 1  # The batch number to render in Exporter.py
 
 enableImages = True  # Renders and exports Images when main.py is run in Blender if enableExporter = True
 enableAnimations = False  # Renders and exports Animations when main.py is run in Blender if enableExporter = True
-enableModelsBlender = True  # Generates 3D models when main.py is run in Blender if enableExporter = True
+enableModelsBlender = (
+    True  # Generates 3D models when main.py is run in Blender if enableExporter = True
+)
 # ^^ Generates models with .blend file NOT external object library.
 
 # Set to true to perform a lightbake before export. Only necessary when generating final output.
-enableLightBake = True
+enableLightBake = False
 
 # Enables Rarity_Sorter to weigh NFT DNA attributes and variants:
-enableRarity = False
+enableRarity = True
 # generateColors must be turned off and enableMaxNFTs must be turned on.
 # True = include weighted rarity percentages in NFTRecord.json calculations,
 # False = Pure random selection of variants
@@ -79,20 +83,22 @@ turnNumsOff = True  # When set to True, turns off the extension numbers represen
 # and fill them in with a script of your own when you mint your NFT collection. These metadata templates are only provided
 # for your convenience and are as accurate to the standards above that I could make them.
 
-metaDataDescription = ''  # The description of your NFT that will be inserted into its meta data
+metaDataDescription = (
+    ""  # The description of your NFT that will be inserted into its meta data
+)
 
 # Set to True to generate images or 3D models depending on your settings below when main.py is run in Blender. Only works
 # if you have already generated NFTRecord.json and all batches.
-enableExporter = True
+enableExporter = False
 
-RENDER_RESOLUTION_PERCENTAGE = 100
+RENDER_RESOLUTION_PERCENTAGE = 200
 
 # ADVANCED FEATURES:
 ### Select colour or material.###
 # Object generation options:
 enableGeneration = True  # When set to true this applies the sets of colors listed below to the objects in the collections named below
 
-generationType = 'material'  # You can either set 'color' or 'material' here. Type you set will correspond to following options.
+generationType = "material"  # You can either set 'color' or 'material' here. Type you set will correspond to following options.
 # generationType = 'material' mode is experimental. Be sure that you back-up your file.
 # You need to set materials as "fake user". Do not miss this step. Or your materials going to vanish after running this script.
 
@@ -101,16 +107,16 @@ generationType = 'material'  # You can either set 'color' or 'material' here. Ty
 # Each set of rgbaColorList1 assigned to an object by collection name in the colorList will act like an attribute and create a unique variant of that item.
 
 # PEDRO_BEGIN Adding colorway support
-#pinkColorway = [(.456, .781, .826, 1)]
-#blueColorway = [(.528, .445, .823, 1)]
+# pinkColorway = [(.456, .781, .826, 1)]
+# blueColorway = [(.528, .445, .823, 1)]
 pinkColorway = {
-    "Colorway_1_0_Primary": (1.0, .820, .863, 1),
-    "Colorway_1_0_Accent": (.682, .775, .812, 1)
+    "Colorway_1_0_Primary": (1.0, 0.820, 0.863, 1),
+    "Colorway_1_0_Accent": (0.682, 0.775, 0.812, 1),
 }
 
 blueColorway = {
-    "Colorway_2_0_Primary": (.456, .781, .826, 1),
-    "Colorway_2_0_Accent": (.800, .730, .393, 1)
+    "Colorway_2_0_Primary": (0.456, 0.781, 0.826, 1),
+    "Colorway_2_0_Accent": (0.800, 0.730, 0.393, 1),
 }
 
 # PEDRO_END
@@ -119,25 +125,64 @@ blueColorway = {
 # To use this all you need to do is place the name of the collection you want colored in the "" and the set of colors you want to apply to it after the :
 # The collection named can only contain objects and not sub collections. Every object in the collection will be set to the colors you assigned above for each attribute
 
-if generationType == 'color':  # Do not change this line.
-# PEDRO_BEGIN Adding colorway support
-#    colorList = {"Colorway_1_0": primaryColorList}
+if generationType == "color":  # Do not change this line.
+    # PEDRO_BEGIN Adding colorway support
+    #    colorList = {"Colorway_1_0": primaryColorList}
     colorList = {"Colorway_1_0": pinkColorway, "Colorway_2_0": blueColorway}
 
-#PEDRO_END
+# PEDRO_END
 
 ### These materials must be in your Current Files' Materials. Make sure that you've set your materials as "fake user". ###
 # The collections below are Current Files' Materials. You can put as many or as little materials values in these lists as you would like.
 # You can create any number of materialLists and assign them to any number of collections that you would like.
 # Each set of materialLists assigned to an object by collection name in the materialList will act like an attribute and create a unique variant of that item.
-materialList1 = ['Dollars_50', 'Dollars_500', 'Dollars_1000', 'Euros_100', 'Pounds_20', 'Pounds_50',
-'Renminbi_20', 'Renminbi_50', 'Renminbi_100', 'Ruble_500', 'Ruble_1000', 'Ruble_5000', 'Sheckles_50',
-'Sheckles_100', 'Sheckles_200', 'Yen_1000', 'Yen_2000', 'Yen_5000']
+materialList1 = [
+    "Dollars_50",
+    "Dollars_500",
+    "Dollars_1000",
+    "Euros_100",
+    "Pounds_20",
+    "Pounds_50",
+    "Renminbi_20",
+    "Renminbi_50",
+    "Renminbi_100",
+    "Ruble_500",
+    "Ruble_1000",
+    "Ruble_5000",
+    "Sheckles_50",
+    "Sheckles_100",
+    "Sheckles_200",
+    "Yen_1000",
+    "Yen_2000",
+    "Yen_5000",
+]
+
+materialRarityList = [
+    0.25,
+    0.25,
+    0.25,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+]
+
 
 # The following material list can be as long or as short as you want it to be.
 # To use this all you need to do is place the name of the collection you want materials assigned in the "" and the set of materials you want to apply to it after the :
 # The collection named can only contain objects and not sub collections. Every object in the collection will be set to the materials you assigned above for each attribute
-if generationType == 'material':  # Do not change this line.
+if generationType == "material":  # Do not change this line.
     colorList = {"A_1_0": materialList1, "B_1_0": materialList1, "C_1_0": materialList1}
 
 enableResetViewport = True  # If True: turns all viewport and render cameras on after Image_Generator is finished operations
@@ -163,36 +208,46 @@ checkDups = False
 # Turn this on when running main.py to generate NFTRecord.json and Batch#.json files to record the rarity percentage of each variant.
 # Note - This file is provided for transparency. The accuracy of the rarity values you set in your .blend file as outlined
 # in the README.md file are dependent on the maxNFTs, and the maximum number of combinations of your NFT collection.
-checkRarity = False
+checkRarity = True
 
 # Utilities - DO NOT TOUCH:
 import platform
 import os
 
-mac = 'Darwin'
-linux = 'Linux'
-windows = 'Windows'
-slash = ''
+mac = "Darwin"
+linux = "Linux"
+windows = "Windows"
+slash = ""
 save_path = None
 
 # Save_path utilities and os compatibility
 if platform.system() == mac:
     save_path = os.path.expanduser(save_path_mac)
-    slash = '/'
+    slash = "/"
 elif platform.system() == linux:
     save_path = os.path.expanduser(save_path_linux)
-    slash = '/'
+    slash = "/"
 elif platform.system() == windows:
     save_path = save_path_windows
-    slash = '\\'
+    slash = "\\"
 
 # Paths to folders
-batch_json_save_path = save_path + slash + 'Batch_Json_files'  # The output path for batches generated by Batch_Sorter.py
-nft_save_path = save_path + slash + 'NFT_Output'  # The output path for images generated by Exporter.py
+batch_json_save_path = (
+    save_path + slash + "Batch_Json_files"
+)  # The output path for batches generated by Batch_Sorter.py
+nft_save_path = (
+    save_path + slash + "NFT_Output"
+)  # The output path for images generated by Exporter.py
 modelAssetPath = save_path + slash + "3D_Model_Input"  # The input path for 3D models
-model_save_path = save_path + slash + "3D_Model_Output"  # The output path for 3D models generated by Model_Generator.py
-model_Script_Ignore_Path = modelAssetPath + slash + "Script_Ignore_Folder"  # The path to the Script_Ignore_Folder for 3D models
+model_save_path = (
+    save_path + slash + "3D_Model_Output"
+)  # The output path for 3D models generated by Model_Generator.py
+model_Script_Ignore_Path = (
+    modelAssetPath + slash + "Script_Ignore_Folder"
+)  # The path to the Script_Ignore_Folder for 3D models
 
 # error handling #
-if modelFileFormat not in ['fbx', 'glb', 'obj', 'x3d'] and enable3DModels:
-    raise ValueError("Output format in `objectFormatExport` can only be 'fbx', 'glb', 'obj', 'x3d'.")
+if modelFileFormat not in ["fbx", "glb", "obj", "x3d"] and enable3DModels:
+    raise ValueError(
+        "Output format in `objectFormatExport` can only be 'fbx', 'glb', 'obj', 'x3d'."
+    )

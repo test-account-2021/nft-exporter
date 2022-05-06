@@ -18,14 +18,17 @@ from src import config
 
 importlib.reload(config)
 
+
 class bcolors:
-   '''
-   The colour of console messages.
-   '''
-   OK = '\033[92m'  # GREEN
-   WARNING = '\033[93m'  # YELLOW
-   ERROR = '\033[91m'  # RED
-   RESET = '\033[0m'  # RESET COLOR
+    """
+    The colour of console messages.
+    """
+
+    OK = "\033[92m"  # GREEN
+    WARNING = "\033[93m"  # YELLOW
+    ERROR = "\033[91m"  # RED
+    RESET = "\033[0m"  # RESET COLOR
+
 
 def checkIfBatchDup():
     file_name = os.path.join(config.save_path, "NFTRecord.json")
@@ -41,11 +44,14 @@ def checkIfBatchDup():
                 numOfDupDNA += 1
             seen.add(x)
         return numOfDupDNA
+
     duplicates = countDups(DNAList)
     return duplicates
+
 
 def checkDups():
     print("NFTRecord.json contains " + str(checkIfBatchDup()) + " duplicate NFT DNA.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     checkDups()

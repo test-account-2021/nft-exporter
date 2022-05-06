@@ -31,46 +31,51 @@ def returnCardanoMetaData(name, description, NFT_DNA, NFT_Variants):
                 "image": "",
                 "mediaType": "",
                 "description": description,
-                "files": [{
-                    "name": "",
-                    "mediaType": "",
-                    "src": "",
-                    "NFT_Variants": NFT_Variants,
-                    "NFT_DNA": NFT_DNA
-                }]
+                "files": [
+                    {
+                        "name": "",
+                        "mediaType": "",
+                        "src": "",
+                        "NFT_Variants": NFT_Variants,
+                        "NFT_DNA": NFT_DNA,
+                    }
+                ],
             }
         },
-        "version": "1.0"
+        "version": "1.0",
     }
 
     return metaDataDictCardano
 
+
 def returnSolanaMetaData(name, description, NFT_DNA, NFT_Variants):
-    metaDataDictSolana = {"name": name, "symbol": "", "description": description, "seller_fee_basis_points": None,
-                          "image": "", "animation_url": "", "external_url": ""}
+    metaDataDictSolana = {
+        "name": name,
+        "symbol": "",
+        "description": description,
+        "seller_fee_basis_points": None,
+        "image": "",
+        "animation_url": "",
+        "external_url": "",
+    }
 
     attributes = []
 
     for i in NFT_Variants:
-        dictionary = {
-            "trait_type": i,
-            "value": NFT_Variants[i]
-        }
+        dictionary = {"trait_type": i, "value": NFT_Variants[i]}
 
         attributes.append(dictionary)
 
     metaDataDictSolana["attributes"] = attributes
-    metaDataDictSolana["collection"] = {
-        "name": "",
-        "family": ""
-    }
+    metaDataDictSolana["collection"] = {"name": "", "family": ""}
 
     metaDataDictSolana["properties"] = {
         "files": [{"uri": "", "type": ""}],
         "category": "",
-        "creators": [{"address": "", "share": None}]
+        "creators": [{"address": "", "share": None}],
     }
     return metaDataDictSolana
+
 
 def returnErc721MetaData(name, description, NFT_DNA, NFT_Variants):
     metaDataDictErc721 = {
@@ -83,10 +88,7 @@ def returnErc721MetaData(name, description, NFT_DNA, NFT_Variants):
     attributes = []
 
     for i in NFT_Variants:
-        dictionary = {
-            "trait_type": i,
-            "value": NFT_Variants[i]
-        }
+        dictionary = {"trait_type": i, "value": NFT_Variants[i]}
 
         attributes.append(dictionary)
 
@@ -94,7 +96,8 @@ def returnErc721MetaData(name, description, NFT_DNA, NFT_Variants):
 
     return metaDataDictErc721
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     returnSolanaMetaData()
     returnCardanoMetaData()
     returnErc721MetaData()

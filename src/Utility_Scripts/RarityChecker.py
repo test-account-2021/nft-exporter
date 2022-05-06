@@ -21,14 +21,17 @@ from src import config
 
 importlib.reload(config)
 
+
 class bcolors:
-   '''
-   The colour of console messages.
-   '''
-   OK = '\033[92m'  # GREEN
-   WARNING = '\033[93m'  # YELLOW
-   ERROR = '\033[91m'  # RED
-   RESET = '\033[0m'  # RESET COLOR
+    """
+    The colour of console messages.
+    """
+
+    OK = "\033[92m"  # GREEN
+    WARNING = "\033[93m"  # YELLOW
+    ERROR = "\033[91m"  # RED
+    RESET = "\033[0m"  # RESET COLOR
+
 
 def getRealRarity():
     file_name = os.path.join(config.save_path, "NFTRecord.json")
@@ -75,27 +78,42 @@ def getRealRarity():
                 if l == k:
                     name = fullNumName[i][k]
                     num = numDict[j][l]
-                    x[name] = [(str(round(((num/numNFTsGenerated)*100), 2)) + "%"), str(num)]
+                    x[name] = [
+                        (str(round(((num / numNFTsGenerated) * 100), 2)) + "%"),
+                        str(num),
+                    ]
 
         completeData[i] = x
 
     print(completeData)
 
-    print(bcolors.OK + "Rarity Checker is active. These are the percentages for each variant per attribute you set in your .blend file:" + bcolors.RESET)
+    print(
+        bcolors.OK
+        + "Rarity Checker is active. These are the percentages for each variant per attribute you set in your .blend file:"
+        + bcolors.RESET
+    )
 
     for i in completeData:
         print(i + ":")
         for j in completeData[i]:
-            print("   " + j + ": " + completeData[i][j][0] + "   Occurrences: " + completeData[i][j][1])
+            print(
+                "   "
+                + j
+                + ": "
+                + completeData[i][j][0]
+                + "   Occurrences: "
+                + completeData[i][j][1]
+            )
 
     jsonMetaData = json.dumps(completeData, indent=1, ensure_ascii=True)
 
-    with open(os.path.join(config.save_path, "RarityData.json"), 'w') as outfile:
-        outfile.write(jsonMetaData + '\n')
+    with open(os.path.join(config.save_path, "RarityData.json"), "w") as outfile:
+        outfile.write(jsonMetaData + "\n")
     path = os.path.join(config.save_path, "RarityData.json")
     print(bcolors.OK + f"Rarity Data has been saved to {path}." + bcolors.RESET)
 
     return
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     getRealRarity()

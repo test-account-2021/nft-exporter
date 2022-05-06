@@ -9,30 +9,43 @@ import importlib
 dir = os.path.dirname(bpy.data.filepath)
 sys.path.append(dir)
 # PEDRO BEGIN Adds absolute path to scripts
-sys.path.append(r'C:\Users\pedro\Git\NFTExporter')
+sys.path.append(r"C:\Users\pedro\Git\NFTExporter")
 # PEDRO END
 sys.modules.values()
 
 
 class bcolors:
-   '''
-   The colour of console messages.
-   '''
-   OK = '\033[92m'  # GREEN
-   WARNING = '\033[93m'  # YELLOW
-   ERROR = '\033[91m'  # RED
-   RESET = '\033[0m'  # RESET COLOR
+    """
+    The colour of console messages.
+    """
+
+    OK = "\033[92m"  # GREEN
+    WARNING = "\033[93m"  # YELLOW
+    ERROR = "\033[91m"  # RED
+    RESET = "\033[0m"  # RESET COLOR
+
 
 try:
     from src import config
-    from src.Utility_Scripts import DuplicateChecker, RenderTest, Preview, BatchRefactorer, RarityChecker
+    from src.Utility_Scripts import (
+        DuplicateChecker,
+        RenderTest,
+        Preview,
+        BatchRefactorer,
+        RarityChecker,
+    )
     from src.Model_Generators import Model_Generator
     from src.Main_Generators import Batch_Sorter, DNA_Generator, Exporter
 
 except:
-    print(bcolors.ERROR + "ERROR:\nBlender cannot find the Blend_My_NFTs folder." + bcolors.RESET + "\nChange the "
-          "directory of your .blend file to be inside the Blend_My_NFTs-main folder. For more details see the README file: "
-          "https://github.com/torrinworx/Blend_My_NFTs\n\n")
+    print(
+        bcolors.ERROR
+        + "ERROR:\nBlender cannot find the Blend_My_NFTs folder."
+        + bcolors.RESET
+        + "\nChange the "
+        "directory of your .blend file to be inside the Blend_My_NFTs-main folder. For more details see the README file: "
+        "https://github.com/torrinworx/Blend_My_NFTs\n\n"
+    )
 
 importlib.reload(config)
 importlib.reload(DuplicateChecker)
@@ -49,23 +62,27 @@ importlib.reload(RarityChecker)
 print("---------------   SCENE LIST   ---------------")
 for scene in bpy.data.scenes:
     print(scene.name)
-    scene.cycles.device = 'GPU'
+    scene.cycles.device = "GPU"
     scene.render.resolution_percentage = config.RENDER_RESOLUTION_PERCENTAGE
     scene.cycles.samples = 128
 
-bpy.context.preferences.addons['cycles'].preferences.compute_device_type = 'CUDA'
+bpy.context.preferences.addons["cycles"].preferences.compute_device_type = "CUDA"
 
 # Enable and list all devices, or optionally disable CPU
 print("----------------------------------------------")
-for d in bpy.context.preferences.addons['cycles'].preferences.devices:
+for d in bpy.context.preferences.addons["cycles"].preferences.devices:
     d.use = True
-    if d.type == 'CPU':
+    if d.type == "CPU":
         d.use = False
-    print("Device '{}' type {} : {}" . format(d.name, d.type, d.use))
+    print("Device '{}' type {} : {}".format(d.name, d.type, d.use))
 print("----------------------------------------------")
 
 
-if not config.enableExporter and not config.runPreview and not config.refactorBatchOrder:
+if (
+    not config.enableExporter
+    and not config.runPreview
+    and not config.refactorBatchOrder
+):
     if config.enable3DModels:
         Model_Generator.generate3DModels()
 

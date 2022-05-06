@@ -14,6 +14,7 @@ sys.path.append(dir)
 sys.modules.values()
 
 from src import config
+
 importlib.reload(config)
 
 from src.Main_Generators import DNA_Generator
@@ -22,16 +23,50 @@ importlib.reload(DNA_Generator)
 
 
 if config.runPreview:
-   config.nftsPerBatch = config.maxNFTsTest
-   config.maxNFTs = config.maxNFTsTest
-   config.renderBatch = 1
-   config.nftName = "TestImages"
+    config.nftsPerBatch = config.maxNFTsTest
+    config.maxNFTs = config.maxNFTsTest
+    config.renderBatch = 1
+    config.nftName = "TestImages"
+
+
+def isZeroArray(array):
+    return not any(array)
+
+
+def createDNA(hierarchy):
+    dnaStr1 = ""
+    for i in hierarchy:
+        number_List_Of_i = []
+        rarity_List_Of_i = []
+        count = 0
+
+        for k in hierarchy[i]:
+            number = hierarchy[i][k]["number"]
+            number_List_Of_i.append(number)
+
+            rarity = hierarchy[i][k]["rarity"]
+            rarity_List_Of_i.append(float(rarity))
+
+            count += 1
+
+        if isZeroArray(rarity_List_Of_i) == True:
+            variantByNum = random.choices(number_List_Of_i, k=1)
+        else:
+            variantByNum = random.choices(
+                number_List_Of_i, weights=rarity_List_Of_i, k=1
+            )
+
+        dnaStr1 += "-" + str(variantByNum[0])
+
+    dnaStr1 = "".join(dnaStr1.split("-", 1))
+    return dnaStr1
+
 
 def sortRarityWeights(hierarchy, listOptionVariant, DNAList):
-    '''
+    """
     Sorts through DataDictionary and appropriately weights each variant based on their rarity percentage set in Blender
     ("rarity" in DNA_Generator). Then
-    '''
+    """
 
     DNASet = set()
 
@@ -41,44 +76,13 @@ def sortRarityWeights(hierarchy, listOptionVariant, DNAList):
         listOptionVariant.append(possibleNums)
 
     for x in range(config.maxNFTs):
-        def createDNA():
-            dnaStr1 = ""
-            for i in hierarchy:
-                number_List_Of_i = []
-                rarity_List_Of_i = []
-                count = 0
-                ifZeroBool = None
-
-                for k in hierarchy[i]:
-                    number = hierarchy[i][k]["number"]
-                    number_List_Of_i.append(number)
-
-                    rarity = hierarchy[i][k]["rarity"]
-                    rarity_List_Of_i.append(float(rarity))
-
-                    count += 1
-
-                for x in rarity_List_Of_i:
-                    if x == 0:
-                        ifZeroBool = True
-                    elif x != 0:
-                        ifZeroBool = False
-
-                if ifZeroBool == True:
-                    variantByNum = random.choices(number_List_Of_i, k=1)
-                elif ifZeroBool == False:
-                    variantByNum = random.choices(number_List_Of_i, weights=rarity_List_Of_i, k=1)
-
-                dnaStr1 += "-" + str(variantByNum[0])
-            dnaStr1 = ''.join(dnaStr1.split('-', 1))
-            return dnaStr1
-
-        dnaPushToList = partial(createDNA)
-
-        DNASet |= {''.join([dnaPushToList()]) for _ in range(config.maxNFTs - len(DNASet))}
+        DNASet |= {
+            "".join([createDNA(hierarchy)]) for _ in range(config.maxNFTs - len(DNASet))
+        }
 
     DNAListRare = list(DNASet)
     return DNAListRare
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sortRarityWeights()
