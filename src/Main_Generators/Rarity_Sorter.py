@@ -68,7 +68,10 @@ def sortRarityWeights(hierarchy, listOptionVariant, DNAList):
     ("rarity" in DNA_Generator). Then
     """
 
-    DNASet = set()
+    if config.initialDNAs:
+        DNASet = set(config.initialDNAs)
+    else:
+        DNASet = set()
 
     for i in hierarchy:
         numChild = len(hierarchy[i])
