@@ -254,7 +254,7 @@ def returnData():
                     and stripColorFromName(i) in config.colorList
                 ):
                     count += 1
-                    number = count
+                    number = str(count)
                     color = orderRarity[2]
                 else:
                     color = "0"

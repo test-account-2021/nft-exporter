@@ -41,8 +41,8 @@ save_path_windows = r"C:\Users\pedro\Git\NFTExporter"
 # Example linux: /Users/Path/to/Blend_My_NFTs
 # Example windows: C:\Users\Path\to\Blend_My_NFTs
 
-maxNFTs = 5  # The maximum number of NFTs you want to generate.
-nftsPerBatch = 5  # Number of NFTs per batch
+maxNFTs = 10  # The maximum number of NFTs you want to generate.
+nftsPerBatch = 10  # Number of NFTs per batch
 renderBatch = 1  # The batch number to render in Exporter.py
 
 enableImages = True  # Renders and exports Images when main.py is run in Blender if enableExporter = True
@@ -160,7 +160,6 @@ materialList1 = [
 materialRarityList = [
     0.25,
     0.25,
-    0.25,
     0.01,
     0.01,
     0.01,
@@ -176,6 +175,7 @@ materialRarityList = [
     0.01,
     0.01,
     0.01,
+    0.20,
 ]
 
 initialDNAs = ['1-1-1-1']
