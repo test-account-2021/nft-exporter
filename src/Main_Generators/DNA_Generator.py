@@ -56,7 +56,14 @@ def returnData():
     :return: listAllCollections, attributeCollections, attributeCollections1, hierarchy, variantMetaData, possibleCombinations
     """
 
-    coll = bpy.context.scene.collection
+    scene = bpy.context.scene.collection
+
+    print(f"=============== scene {list(scene.children)}")
+    collections = list(scene.children)
+    print(f"mycollection {collections}")
+
+    
+
 
     try:
         scriptIgnore = bpy.data.collections["Script_Ignore"]
@@ -68,46 +75,78 @@ def returnData():
             + bcolors.RESET
         )
 
+    collection_list = [collection for collection in collections if not collection == scriptIgnore]
+    collection_list = sorted(collection_list, key=lambda c: c.name)
+    print(f"=========== mylist {collection_list}")
+
+
+    attribute_names = [c.name for c in collections if not c == scriptIgnore]
+    attribute_names.sort()
+    print(f"=========== attribute_names {attribute_names}")
+
     listAllCollInScene = []
     listAllCollections = []
+
 
     def traverse_tree(t):
         yield t
         for child in t.children:
             yield from traverse_tree(child)
 
-    for c in traverse_tree(coll):
-        listAllCollInScene.append(c)
+    # for c in traverse_tree(coll):
+    #     listAllCollInScene.append(c)
 
-    def listSubIgnoreCollections():
-        def getParentSubCollections(collection):
-            yield collection
-            for child in collection.children:
-                yield from getParentSubCollections(child)
+    # def listSubIgnoreCollections():
+    #     def getParentSubCollections(collection):
+    #         yield collection
+    #         for child in collection.children:
+    #             yield from getParentSubCollections(child)
 
-        collList = []
-        for c in getParentSubCollections(scriptIgnore):
-            collList.append(c.name)
-        return collList
+    #     collList = []
+    #     for c in getParentSubCollections(scriptIgnore):
+    #         collList.append(c.name)
+    #     return collList
 
-    ignoreList = listSubIgnoreCollections()
+    # ignoreList = listSubIgnoreCollections()
 
-    for i in listAllCollInScene:
-        if config.enableGeneration:
+    def get_element_name(element):
+        if element.name in config.colorList:
+            for j in range(len(config.colorList[element.name])):
+                if element.name[-1].isdigit() and element.name:
+                    return element.name + "_" + str(j + 1)
+                elif j == 0:
+                    return element.name
+        elif element.name[-1].isdigit() and element.name:
+            return element.name + "_0"
+        else:
+            return element.name
+
+    def get_color_variations(name):
+        color_variations = []
+        print(f"color list {config.colorList[name]}")
+        for j in range(len(config.colorList[name])):
+            if name[-1].isdigit() and name:
+                color_variations.append(name + "_" + str(j + 1))
+            elif j == 0:
+                color_variations.append(name)
+        print(f"color variations {color_variations}")
+        return color_variations
+
+
+    if config.enableGeneration:
+        for i in listAllCollInScene:
+    
             if i.name in config.colorList:
-                for j in range(len(config.colorList[i.name])):
-                    if i.name[-1].isdigit() and i.name not in ignoreList:
-                        listAllCollections.append(i.name + "_" + str(j + 1))
-                    elif j == 0:
-                        listAllCollections.append(i.name)
-            elif i.name[-1].isdigit() and i.name not in ignoreList:
+                listAllCollections += get_color_variations(i)
+            elif i.name[-1].isdigit() and i.name:
                 listAllCollections.append(i.name + "_0")
             else:
                 listAllCollections.append(i.name)
-        else:
-            listAllCollections.append(i.name)
+    else:
+        listAllCollections = copy.deepcopy(listAllCollInScene)
 
-    listAllCollections.remove(scriptIgnore.name)
+
+    # listAllCollections.remove(scriptIgnore.name)
 
     if "Scene Collection" in listAllCollections:
         listAllCollections.remove("Scene Collection")
@@ -115,17 +154,17 @@ def returnData():
     if "Master Collection" in listAllCollections:
         listAllCollections.remove("Master Collection")
 
-    def allScriptIgnore(collection):
-        """
-        Removes all collections, sub collections in Script_Ignore collection from listAllCollections.
-        """
-        for coll in list(collection.children):
-            listAllCollections.remove(coll.name)
-            listColl = list(coll.children)
-            if len(listColl) > 0:
-                allScriptIgnore(coll)
+    # def allScriptIgnore(collection):
+    #     """
+    #     Removes all collections, sub collections in Script_Ignore collection from listAllCollections.
+    #     """
+    #     for coll in list(collection.children):
+    #         listAllCollections.remove(coll.name)
+    #         listColl = list(coll.children)
+    #         if len(listColl) > 0:
+    #             allScriptIgnore(coll)
 
-    allScriptIgnore(scriptIgnore)
+    # allScriptIgnore(scriptIgnore)
     listAllCollections.sort()
 
     exclude = ["_", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
@@ -144,7 +183,7 @@ def returnData():
         filter_num()
 
     attributeVariants = [x for x in listAllCollections if x not in attributeCollections]
-    attributeCollections1 = copy.deepcopy(attributeCollections)
+    # attributeCollections1 = copy.deepcopy(attributeCollections)
 
     def attributeData(attributeVariants):
         """
@@ -215,7 +254,7 @@ def returnData():
                     and stripColorFromName(i) in config.colorList
                 ):
                     count += 1
-                    number = orderRarity[2]
+                    number = count
                     color = orderRarity[2]
                 else:
                     color = "0"
@@ -229,14 +268,38 @@ def returnData():
                 allAttDataList[i] = eachObject
         return allAttDataList
 
-    variantMetaData = attributeData(attributeVariants)
+    # variantMetaData = attributeData(attributeVariants)
+
+    def get_children_from_collection(collection):
+        children = [c for c in collection.children]
+        variation_list = []
+        print(f"=========parent {collection.name}")
+        print(f"========== children {children}")
+        for item in children:
+            if item.name in config.colorList:
+                variation_list += get_color_variations(item.name)
+            elif item.name[-1].isdigit() and item.name:
+                variation_list.append(item.name + "_0")
+            else:
+                variation_list.append(item.name)
+        return variation_list
+
+    variantMetaData = {}
+    for collection in collection_list:
+        print(f"=========== individual {collection}")
+        variations = get_children_from_collection(collection)
+        print(f"============ variations {variations}")
+        variantMetaData = {**variantMetaData, **attributeData(variations) }
+
+
+    print(f"=============== variantMetaData {variantMetaData}")
 
     def getHierarchy():
         """
         Constructs the hierarchy dictionary from attributeCollections1 and variantMetaData.
         """
         hierarchy = {}
-        for i in attributeCollections1:
+        for i in attribute_names:
             colParLong = list(bpy.data.collections[str(i)].children)
             colParShort = {}
             for x in colParLong:
@@ -344,7 +407,7 @@ def returnData():
     return (
         listAllCollections,
         attributeCollections,
-        attributeCollections1,
+        attribute_names,
         hierarchy,
         possibleCombinations,
     )

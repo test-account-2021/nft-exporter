@@ -67,8 +67,11 @@ def getRealRarity():
 
             fullNumName[i][variantNum] = j
 
-    completeData = {}
+    print(f"======fullNumName {fullNumName}")
+    print(f"======numDict {numDict}")
 
+    completeData = {}
+    print(f"====== zip {list(zip(fullNumName, numDict))}")
     for i, j in zip(fullNumName, numDict):
         x = {}
 
