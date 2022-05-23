@@ -53,7 +53,7 @@ def stripColorFromName(name):
 def returnData():
     """
     Generates important variables, dictionaries, and lists needed to be stored to catalog the NFTs.
-    :return: listAllCollections, attributeCollections, attributeCollections1, hierarchy, variantMetaData, possibleCombinations
+    :return: attribute_names, hierarchy, variantMetaData, possibleCombinations
     """
 
     scene = bpy.context.scene.collection
@@ -61,9 +61,6 @@ def returnData():
     print(f"=============== scene {list(scene.children)}")
     collections = list(scene.children)
     print(f"mycollection {collections}")
-
-    
-
 
     try:
         scriptIgnore = bpy.data.collections["Script_Ignore"]
@@ -85,29 +82,6 @@ def returnData():
     print(f"=========== attribute_names {attribute_names}")
 
     listAllCollInScene = []
-    listAllCollections = []
-
-
-    def traverse_tree(t):
-        yield t
-        for child in t.children:
-            yield from traverse_tree(child)
-
-    # for c in traverse_tree(coll):
-    #     listAllCollInScene.append(c)
-
-    # def listSubIgnoreCollections():
-    #     def getParentSubCollections(collection):
-    #         yield collection
-    #         for child in collection.children:
-    #             yield from getParentSubCollections(child)
-
-    #     collList = []
-    #     for c in getParentSubCollections(scriptIgnore):
-    #         collList.append(c.name)
-    #     return collList
-
-    # ignoreList = listSubIgnoreCollections()
 
     def get_element_name(element):
         if element.name in config.colorList:
@@ -132,58 +106,7 @@ def returnData():
         print(f"color variations {color_variations}")
         return color_variations
 
-
-    if config.enableGeneration:
-        for i in listAllCollInScene:
-    
-            if i.name in config.colorList:
-                listAllCollections += get_color_variations(i)
-            elif i.name[-1].isdigit() and i.name:
-                listAllCollections.append(i.name + "_0")
-            else:
-                listAllCollections.append(i.name)
-    else:
-        listAllCollections = copy.deepcopy(listAllCollInScene)
-
-
-    # listAllCollections.remove(scriptIgnore.name)
-
-    if "Scene Collection" in listAllCollections:
-        listAllCollections.remove("Scene Collection")
-
-    if "Master Collection" in listAllCollections:
-        listAllCollections.remove("Master Collection")
-
-    # def allScriptIgnore(collection):
-    #     """
-    #     Removes all collections, sub collections in Script_Ignore collection from listAllCollections.
-    #     """
-    #     for coll in list(collection.children):
-    #         listAllCollections.remove(coll.name)
-    #         listColl = list(coll.children)
-    #         if len(listColl) > 0:
-    #             allScriptIgnore(coll)
-
-    # allScriptIgnore(scriptIgnore)
-    listAllCollections.sort()
-
     exclude = ["_", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    attributeCollections = copy.deepcopy(listAllCollections)
-
-    def filter_num():
-        """
-        This function removes items from 'attributeCollections' if they include values from the 'exclude' variable.
-        It removes child collections from the parent collections in from the "listAllCollections" list.
-        """
-        for x in attributeCollections:
-            if any(a in x for a in exclude):
-                attributeCollections.remove(x)
-
-    for i in range(len(listAllCollections)):
-        filter_num()
-
-    attributeVariants = [x for x in listAllCollections if x not in attributeCollections]
-    # attributeCollections1 = copy.deepcopy(attributeCollections)
 
     def attributeData(attributeVariants):
         """
@@ -268,13 +191,9 @@ def returnData():
                 allAttDataList[i] = eachObject
         return allAttDataList
 
-    # variantMetaData = attributeData(attributeVariants)
-
     def get_children_from_collection(collection):
         children = [c for c in collection.children]
         variation_list = []
-        print(f"=========parent {collection.name}")
-        print(f"========== children {children}")
         for item in children:
             if item.name in config.colorList:
                 variation_list += get_color_variations(item.name)
@@ -286,17 +205,12 @@ def returnData():
 
     variantMetaData = {}
     for collection in collection_list:
-        print(f"=========== individual {collection}")
         variations = get_children_from_collection(collection)
-        print(f"============ variations {variations}")
         variantMetaData = {**variantMetaData, **attributeData(variations) }
-
-
-    print(f"=============== variantMetaData {variantMetaData}")
 
     def getHierarchy():
         """
-        Constructs the hierarchy dictionary from attributeCollections1 and variantMetaData.
+        Constructs the hierarchy dictionary from variantMetaData.
         """
         hierarchy = {}
         for i in attribute_names:
@@ -405,8 +319,6 @@ def returnData():
         cameraToggle(i)
 
     return (
-        listAllCollections,
-        attributeCollections,
         attribute_names,
         hierarchy,
         possibleCombinations,
@@ -419,9 +331,7 @@ def generateNFT_DNA():
     """
 
     (
-        listAllCollections,
-        attributeCollections,
-        attributeCollections1,
+        attribute_names,
         hierarchy,
         possibleCombinations,
     ) = returnData()

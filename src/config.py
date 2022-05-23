@@ -41,7 +41,7 @@ save_path_windows = r"C:\Users\pedro\Git\NFTExporter"
 # Example linux: /Users/Path/to/Blend_My_NFTs
 # Example windows: C:\Users\Path\to\Blend_My_NFTs
 
-maxNFTs = 10  # The maximum number of NFTs you want to generate.
+maxNFTs = 100  # The maximum number of NFTs you want to generate.
 nftsPerBatch = 10  # Number of NFTs per batch
 renderBatch = 1  # The batch number to render in Exporter.py
 
